@@ -6,6 +6,17 @@ from time import sleep
 from datetime import datetime
 
 
+
+# define function for printing results
+def print_result(humidity, temperature):
+    if humidity is not None and temperature is not None:
+        print('Time={0}  Temp={1:0.1f}*C  Humidity={2:0.1f}%'.format(time, temperature, humidity))
+    else:
+        print('Failed to get reading. Try again!')
+        sys.exit(1)
+
+
+
 # Parse command line parameters.
 if len(sys.argv) == 2 and (2 <= int(sys.argv[1]) <=10):
     sleep_duration = int(sys.argv[1])
@@ -25,11 +36,8 @@ try:
         humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
         time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        if humidity is not None and temperature is not None:
-            print('Time={0}  Temp={1:0.1f}*C  Humidity={2:0.1f}%'.format(time, temperature, humidity))
-            sleep(sleep_duration)
-        else:
-            print('Failed to get reading. Try again!')
-            sys.exit(1)
+        print_result(humidity, temperature)
+
+        sleep(sleep_duration)
 except KeyboardInterrupt:
     sys.exit(0)
