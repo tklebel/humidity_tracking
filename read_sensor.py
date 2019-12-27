@@ -8,9 +8,12 @@ from datetime import datetime
 
 
 # define function for printing results
-def print_result(humidity, temperature):
+def print_result(time, humidity, temperature):
     if humidity is not None and temperature is not None:
-        print('Time={0}  Temp={1:0.1f}*C  Humidity={2:0.1f}%'.format(time, temperature, humidity))
+        # format time string
+        time_pretty = time.strftime('%Y-%m-%d %H:%M:%S')
+
+        print('Time={0}  Temp={1:0.1f}*C  Humidity={2:0.1f}%'.format(time_pretty, temperature, humidity))
     else:
         print('Failed to get reading. Try again!')
         sys.exit(1)
@@ -34,9 +37,9 @@ pin = 4
 try:
     while True:
         humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
-        time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        time = datetime.now()
 
-        print_result(humidity, temperature)
+        print_result(time, humidity, temperature)
 
         sleep(sleep_duration)
 except KeyboardInterrupt:
