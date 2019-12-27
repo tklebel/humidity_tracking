@@ -7,7 +7,7 @@ from datetime import datetime
 
 
 # Parse command line parameters.
-if len(sys.argv) == 2 and int(sys.argv[1]) >=2 and int(sys.argv[1]) <=10:
+if len(sys.argv) == 2 and (2 <= int(sys.argv[1]) <=10):
 	sleep_duration = int(sys.argv[1])
 else:
 	print('Usage: read_sensor.py 2')
