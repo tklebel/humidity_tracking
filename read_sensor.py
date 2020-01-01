@@ -34,6 +34,11 @@ def write_to_db(cursor, time, humidity, temperature):
 
     con.commit()
 
+def cleanup_db():
+    con.close()
+    cursor.close()
+    print("Database connections closed")
+
 
 
 # sensor type and the pin to which the sensor is connected are hard coded since they don't change
@@ -49,4 +54,5 @@ try:
 
         sleep(sleep_duration)
 except KeyboardInterrupt:
+    cleanup_db()
     sys.exit(0)
