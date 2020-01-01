@@ -14,6 +14,10 @@ cursor = con.cursor()
 # set sleep duration for test purposes
 sleep_duration = 30
 
+# sensor type and the pin to which the sensor is connected are hard coded since they don't change
+sensor = Adafruit_DHT.AM2302
+pin = 4
+
 # define function for printing results
 def print_result(time, humidity, temperature):
     if humidity is not None and temperature is not None:
@@ -25,6 +29,7 @@ def print_result(time, humidity, temperature):
         print('Failed to get reading. Try again!')
         sys.exit(1)
 
+# function for writing results to database
 def write_to_db(cursor, time, humidity, temperature):
 
     insert_sql = """INSERT INTO humidity_data
@@ -39,13 +44,8 @@ def cleanup_db():
     cursor.close()
     print("Database connections closed")
 
-
-
-# sensor type and the pin to which the sensor is connected are hard coded since they don't change
-sensor = Adafruit_DHT.AM2302
-pin = 4
-
-try:
+def main():
+    print("Reading data and writing to database every", sleep_duration, "seconds.")
     while True:
         humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
         time = datetime.now()
@@ -53,7 +53,13 @@ try:
         write_to_db(cursor, time, humidity, temperature)
 
         sleep(sleep_duration)
-except KeyboardInterrupt:
-    sys.exit(0)
-finally:
-    cleanup_db()
+
+
+if __name__=='__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(0)
+    finally:
+        cleanup_db()
+
