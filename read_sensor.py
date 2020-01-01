@@ -56,3 +56,5 @@ try:
 except KeyboardInterrupt:
     cleanup_db()
     sys.exit(0)
+finally:
+    cleanup_db()
