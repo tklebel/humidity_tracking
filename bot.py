@@ -6,6 +6,7 @@ import Adafruit_DHT
 from datetime import datetime
 from functions import format_result
 from bot_secrets import channels, bottoken
+# import numpy as np
 
 
 c = channels
@@ -39,24 +40,37 @@ def monitor_humidity(context: CallbackContext):
 
     results = get_data()
     humidity = results[1]
+    ##  alternative for debugging
+    # humidity =  np.random.normal(60, 10, 1)
     humidity_pretty = "{0:0.1f}%".format(humidity)
-    alerting = False
+
 
     if humidity > 60:
-        logger.info('Sending alert. Humidity at ' + humidity_pretty)
+        job.context = True
         job.interval *= 2
+        logger.info('Sending alert. Humidity at ' + humidity_pretty)
         context.bot.send_message(chat_id=c.channel('id'),
                                  text='Humidity at ' + humidity_pretty + '! Air the room!')
+    elif humidity <= 60 and job.context:
+        # this part only runs once after we have stopped alerting
+        job.context = False
+        job.interval = 60
+        logger.info('Humidity level restored, resume checking every 60 seconds.')
+        context.bot.send_message(
+            chat_id=c.channel('id'),
+            text='Safe humidity level restored!')
     else:
+        # this is the standard case which usually runs every 60 seconds
         job.interval = 60
         logger.info('Checking humidity. Humidity at ' + humidity_pretty)
 
 
-    # remove the alert after two days
-    if job.interval > 2*24*60:
+    # remove the job after two days
+    # this, together with sending messages with increasing delay should be decoupled from the checking interval
+    if job.interval > 2*24*60*60:
         job.schedule_removal()
 
-j.run_repeating(monitor_humidity, interval=60, first=0)
+j.run_repeating(monitor_humidity, interval=60, first=0, context=False)
 
 
 status_handler = CommandHandler('status', status, filters=Filters.user(username=c.channel('user')))
