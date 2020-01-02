@@ -33,7 +33,7 @@ def status(update, context):
 
     message = format_result(*results)
     context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-    logger.info('Sending status.')
+    logger.info('Sending status: ' + message)
 
 def monitor_humidity(context: CallbackContext):
     job = context.job
