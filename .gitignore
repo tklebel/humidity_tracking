@@ -1,5 +1,5 @@
 db_credentials.txt
 __pycache__
 nohup.out
-bot_token.txt
+bot_secrets.py
 connect_to_db.py
