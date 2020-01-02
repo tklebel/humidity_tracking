@@ -26,7 +26,10 @@ def get_data():
     humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, 4)
     time = datetime.now()
 
-    return (time, humidity, temperature)
+    if humidity is not None and temperature is not None:
+        return (time, humidity, temperature)
+    else:
+        get_data()
 
 def status(update, context):
     results = get_data()
