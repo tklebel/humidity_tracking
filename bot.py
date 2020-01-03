@@ -48,13 +48,13 @@ def monitor_humidity(context: CallbackContext):
     humidity_pretty = "{0:0.1f}%".format(humidity)
 
 
-    if humidity > 60:
+    if humidity > 75:
         job.context = True
         job.interval *= 2
         logger.info('Sending alert. Humidity at ' + humidity_pretty)
         context.bot.send_message(chat_id=c.channel('id'),
                                  text='Humidity at ' + humidity_pretty + '! Air the room!')
-    elif humidity <= 60 and job.context:
+    elif humidity <= 75 and job.context:
         # this part only runs once after we have stopped alerting
         job.context = False
         job.interval = 60
