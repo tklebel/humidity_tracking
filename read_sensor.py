@@ -2,8 +2,8 @@
 
 import sys
 import Adafruit_DHT
+import logging
 from time import sleep
-from datetime import datetime
 from functions import connect_db, get_data
 from PCF8574 import PCF8574_GPIO
 from Adafruit_LCD1602 import Adafruit_CharLCD
@@ -16,6 +16,11 @@ cursor = con.cursor()
 
 # set sleep duration for test purposes
 sleep_duration = 30
+
+# set up logging for debugging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 # function for writing results to database
@@ -65,7 +70,7 @@ def main():
         write_to_db(cursor, time, humidity, temperature)
 
         if humidity is None or temperature is None:
-            print("Readings could not be recovered via recursion")
+            logger.info("Readings could not be recovered via recursion")
             sleep(sleep_duration)
             continue # do not update the display this time
 
