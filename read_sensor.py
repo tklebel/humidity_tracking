@@ -4,7 +4,7 @@ import sys
 import Adafruit_DHT
 from time import sleep
 from datetime import datetime
-from functions import connect_db
+from functions import connect_db, get_data
 from PCF8574 import PCF8574_GPIO
 from Adafruit_LCD1602 import Adafruit_CharLCD
 
@@ -17,9 +17,6 @@ cursor = con.cursor()
 # set sleep duration for test purposes
 sleep_duration = 30
 
-# sensor type and the pin to which the sensor is connected are hard coded since they don't change
-sensor = Adafruit_DHT.AM2302
-pin = 4
 
 # function for writing results to database
 def write_to_db(cursor, time, humidity, temperature):
@@ -57,18 +54,23 @@ except:
 lcd = Adafruit_CharLCD(pin_rs=0, pin_e=2, pins_db=[4,5,6,7], GPIO=mcp)
 mcp.output(3,1)     # turn on LCD backlight (set second param to 0 for no backlight)
 lcd.begin(16,2)     # set number of LCD lines and columns
-lcd.setCursor(0,0)  # set cursor position
+lcd.clear()         # clear the display in case something was not removed before
+
 
 def main():
     print("Reading data and writing to database every", sleep_duration, "seconds.")
     while True:
-        humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
-        time = datetime.now()
+        time, humidity, temperature = get_data()
 
         write_to_db(cursor, time, humidity, temperature)
 
-        # display measurements on display
+        if humidity is None or temperature is None:
+            print("Readings could not be recovered via recursion")
+            sleep(sleep_duration)
+            continue # do not update the display this time
 
+        # display measurements on display
+        lcd.setCursor(0,0)  # set cursor position. this needs to be here, otherwise the display keeps old output
         lcd.message('Temp={0:0.1f}*C\n'.format(temperature))
         lcd.message('Humidity={0:0.1f}%'.format(humidity))
 

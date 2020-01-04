@@ -4,7 +4,7 @@ from telegram.ext import Updater, CommandHandler, Filters, CallbackContext
 import logging
 import Adafruit_DHT
 from datetime import datetime
-from functions import format_result
+from functions import format_result, get_data
 from bot_secrets import channels, bottoken
 # import numpy as np
 
@@ -21,15 +21,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
-def get_data():
-    humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, 4)
-    time = datetime.now()
-
-    if humidity is not None and temperature is not None:
-        return (time, humidity, temperature)
-    else:
-        get_data()
 
 def status(update, context):
     results = get_data()
