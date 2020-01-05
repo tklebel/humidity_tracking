@@ -40,31 +40,36 @@ def monitor_humidity(context: CallbackContext):
 
 
     if humidity > 75:
-        job.context = True
-        job.interval *= 2
-        logger.info('Sending alert. Humidity at ' + humidity_pretty)
-        context.bot.send_message(chat_id=c.channel('id'),
-                                 text='Humidity at ' + humidity_pretty + '! Air the room!')
-    elif humidity <= 75 and job.context:
+        job.context['alerting'] = True
+
+        msg_int = job.context['message_interval']
+        if msg_int % 30 == 0 and msg_int < 1440:
+            # send message every 30 minutes and stop after 24h (60 minutes * 24 hours = 1440 minutes)
+            logger.info('Sending alert. Humidity at ' + humidity_pretty)
+            context.bot.send_message(chat_id=c.channel('id'),
+                                     text='Humidity at ' + humidity_pretty + '! Air the room!')
+        else:
+            logger.info('Message interval = ' + msg_int)
+
+        job.context['message_interval'] += 1
+
+    elif humidity <= 75 and job.context['alerting']:
         # this part only runs once after we have stopped alerting
-        job.context = False
-        job.interval = 60
-        logger.info('Humidity level restored, resume checking every 60 seconds.')
+
+        # reset context values
+        job.context['alerting'] = False
+        job.context['message_interval'] = 30
+
+        logger.info('Humidity level restored.')
         context.bot.send_message(
             chat_id=c.channel('id'),
             text='Safe humidity level restored!')
     else:
         # this is the standard case which usually runs every 60 seconds
-        job.interval = 60
         logger.info('Checking humidity. Humidity at ' + humidity_pretty)
 
 
-    # remove the job after two days
-    # this, together with sending messages with increasing delay should be decoupled from the checking interval
-    if job.interval > 2*24*60*60:
-        job.schedule_removal()
-
-j.run_repeating(monitor_humidity, interval=60, first=0, context=False)
+j.run_repeating(monitor_humidity, interval=60, first=0, context={'alerting': False, 'message_interval': 30})
 
 
 status_handler = CommandHandler('status', status, filters=Filters.user(username=c.channel('user')))
