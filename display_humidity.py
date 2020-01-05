@@ -45,7 +45,7 @@ lcd.clear()         # clear the display in case something was not removed before
 
 def main():
     while True:
-        time, humidity, temperature = get_data()
+        time, humidity, temperature = get_data(logger)
 
         if humidity is None or temperature is None:
             # this part seems not to be working properly

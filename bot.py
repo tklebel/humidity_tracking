@@ -32,7 +32,7 @@ def status(update, context):
 def monitor_humidity(context: CallbackContext):
     job = context.job
 
-    results = get_data()
+    results = get_data(logger)
     humidity = results[1]
     ##  alternative for debugging
     # humidity =  np.random.normal(60, 10, 1)

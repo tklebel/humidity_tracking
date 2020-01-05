@@ -23,7 +23,7 @@ def format_result(time, humidity, temperature):
     else:
         return('Failed to get reading.')
 
-def get_data():
+def get_data(logger):
     # sensor type and the pin to which the sensor is connected are hard coded since they don't change
     humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, 4)
     time = datetime.now()
@@ -31,6 +31,6 @@ def get_data():
     if humidity is not None and temperature is not None:
         return (time, humidity, temperature)
     else:
-        print("We got no reading, but ``humidity = " + str(humidity) + " & temp = " + str(temperature) + "`` , trying again.")
+        logger.info('We got no reading, but ``humidity = ' + str(humidity) + ' & temp = ' + str(temperature) + '`` , trying again.')
         sleep(2) # sleep for two seconds before re-trying
         get_data()

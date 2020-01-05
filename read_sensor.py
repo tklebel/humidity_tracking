@@ -38,7 +38,7 @@ def cleanup_db():
 def main():
     print("Reading data and writing to database every", sleep_duration, "seconds.")
     while True:
-        time, humidity, temperature = get_data()
+        time, humidity, temperature = get_data(logger)
 
         write_to_db(cursor, time, humidity, temperature)
 
