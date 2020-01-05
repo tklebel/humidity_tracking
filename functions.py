@@ -11,7 +11,7 @@ def connect_db():
 
     connection = psycopg2.connect(params)
     
-    return(connection)
+    return connection
 
 # define function for printing results
 def format_result(time, humidity, temperature):
@@ -19,9 +19,9 @@ def format_result(time, humidity, temperature):
         # format time string
         time_pretty = time.strftime('%Y-%m-%d %H:%M:%S')
 
-        return('Time={0}  Temp={1:0.1f}*C  Humidity={2:0.1f}%'.format(time_pretty, temperature, humidity))
+        return 'Time={0}  Temp={1:0.1f}*C  Humidity={2:0.1f}%'.format(time_pretty, temperature, humidity)
     else:
-        return('Failed to get reading.')
+        return 'Failed to get reading.'
 
 def get_data(logger):
     # sensor type and the pin to which the sensor is connected are hard coded since they don't change
