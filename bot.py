@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 def status(update, context):
-    results = get_data()
+    results = get_data(logger)
 
     message = format_result(*results)
     context.bot.send_message(chat_id=update.effective_chat.id, text=message)
