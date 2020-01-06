@@ -19,11 +19,11 @@ j = updater.job_queue
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 def status(update, context):
-    results = get_data(logger)
+    results = get_data()
 
     message = format_result(*results)
     context.bot.send_message(chat_id=update.effective_chat.id, text=message)
@@ -32,7 +32,7 @@ def status(update, context):
 def monitor_humidity(context: CallbackContext):
     job = context.job
 
-    results = get_data(logger)
+    results = get_data()
     humidity = results[1]
     ##  alternative for debugging
     # humidity =  np.random.normal(60, 10, 1)

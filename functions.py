@@ -3,6 +3,8 @@ import Adafruit_DHT
 from datetime import datetime
 from time import sleep
 
+import logging
+logger = logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 
 def connect_db():
@@ -23,7 +25,7 @@ def format_result(time, humidity, temperature):
     else:
         return 'Failed to get reading.'
 
-def get_data(logger):
+def get_data():
     # sensor type and the pin to which the sensor is connected are hard coded since they don't change
     humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, 4)
     time = datetime.now()

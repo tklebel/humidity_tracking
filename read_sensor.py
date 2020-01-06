@@ -17,7 +17,7 @@ sleep_duration = 30
 # set up logging for debugging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 # function for writing results to database
@@ -38,7 +38,7 @@ def cleanup_db():
 def main():
     print("Reading data and writing to database every", sleep_duration, "seconds.")
     while True:
-        time, humidity, temperature = get_data(logger)
+        time, humidity, temperature = get_data()
 
         write_to_db(cursor, time, humidity, temperature)
 

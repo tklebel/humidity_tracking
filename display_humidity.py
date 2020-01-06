@@ -16,7 +16,7 @@ sleep_duration = 30
 # set up logging for debugging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 def clear_display():
@@ -45,7 +45,7 @@ lcd.clear()         # clear the display in case something was not removed before
 
 def main():
     while True:
-        time, humidity, temperature = get_data(logger)
+        time, humidity, temperature = get_data()
 
         # display measurements on display
         lcd.setCursor(0,0)  # set cursor position. this needs to be here, otherwise the display keeps old output
