@@ -47,12 +47,6 @@ def main():
     while True:
         time, humidity, temperature = get_data(logger)
 
-        if humidity is None or temperature is None:
-            # this part seems not to be working properly
-            logger.info("Readings could not be recovered via recursion")
-            sleep(sleep_duration)
-            continue # do not update the display this time
-
         # display measurements on display
         lcd.setCursor(0,0)  # set cursor position. this needs to be here, otherwise the display keeps old output
         lcd.message('Temp={0:0.1f}*C\n'.format(temperature))

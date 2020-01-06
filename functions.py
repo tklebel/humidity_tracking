@@ -33,4 +33,4 @@ def get_data(logger):
     else:
         logger.info('We got no reading, but ``humidity = ' + str(humidity) + ' & temp = ' + str(temperature) + '`` , trying again.')
         sleep(2) # sleep for two seconds before re-trying
-        get_data()
+        return get_data()
