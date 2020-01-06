@@ -49,7 +49,7 @@ def monitor_humidity(context: CallbackContext):
             context.bot.send_message(chat_id=c.channel('id'),
                                      text='Humidity at ' + humidity_pretty + '! Air the room!')
         else:
-            logger.info('Message interval = ' + msg_int)
+            logger.info('Message interval = ' + str(msg_int))
 
         job.context['message_interval'] += 1
 
