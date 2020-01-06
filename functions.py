@@ -4,7 +4,8 @@ from datetime import datetime
 from time import sleep
 
 import logging
-logger = logging.getLogger(__name__).addHandler(logging.NullHandler())
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 
 def connect_db():
