@@ -4,7 +4,7 @@ import sys
 import Adafruit_DHT
 import logging
 from time import sleep
-from functions import get_data
+from functions import get_data, create_logger
 from PCF8574 import PCF8574_GPIO
 from Adafruit_LCD1602 import Adafruit_CharLCD
 
@@ -13,15 +13,13 @@ from Adafruit_LCD1602 import Adafruit_CharLCD
 # set sleep duration for test purposes
 sleep_duration = 30
 
-# set up logging for debugging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-logger = logging.getLogger()
+# # set up logging for debugging
+logger = create_logger('display.log')
 
 
 def clear_display():
     lcd.clear()
-    print("Display cleared.")
+    logger.info("Display cleared.")
 
 
 ## setup display stuff (copied from example from freenove) #########
@@ -44,6 +42,7 @@ lcd.clear()         # clear the display in case something was not removed before
 
 
 def main():
+    logger.info('Displaying humidity.')
     while True:
         time, humidity, temperature = get_data()
 
@@ -61,6 +60,6 @@ if __name__=='__main__':
     except KeyboardInterrupt:
         sys.exit(0)
     finally:
-        print('\nTerminating...')
+        logger.info('Terminating...')
         clear_display()
 

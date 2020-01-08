@@ -4,7 +4,7 @@ from telegram.ext import Updater, CommandHandler, Filters, CallbackContext
 import logging
 import Adafruit_DHT
 from datetime import datetime
-from functions import format_result, get_data
+from functions import format_result, get_data, create_logger
 from bot_secrets import channels, bottoken
 # import numpy as np
 
@@ -17,9 +17,8 @@ updater = Updater(token=b.token(), use_context=True)
 dispatcher = updater.dispatcher
 j = updater.job_queue
 
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-logger = logging.getLogger()
+# set up logging for debugging
+logger = create_logger('bot.log')
 
 
 def status(update, context):

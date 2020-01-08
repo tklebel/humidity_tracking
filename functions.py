@@ -37,3 +37,21 @@ def get_data():
         logger.info('We got no reading, but ``humidity = ' + str(humidity) + ' & temp = ' + str(temperature) + '`` , trying again.')
         sleep(2) # sleep for two seconds before re-trying
         return get_data()
+
+
+def create_logger(file):
+    # set up logging for debugging
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
+    # create file handler
+    fh = logging.FileHandler(file)
+
+    # create formatter and add it to the handler
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+
+    # add handler
+    logger.addHandler(fh)
+
+    return logger

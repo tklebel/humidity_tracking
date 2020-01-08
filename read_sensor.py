@@ -4,7 +4,7 @@ import sys
 import Adafruit_DHT
 import logging
 from time import sleep
-from functions import connect_db, get_data
+from functions import connect_db, get_data, create_logger
 
 
 # setup db connection
@@ -15,9 +15,7 @@ cursor = con.cursor()
 sleep_duration = 30
 
 # set up logging for debugging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-logger = logging.getLogger()
+logger = create_logger('read_sensor.log')
 
 
 # function for writing results to database
@@ -33,10 +31,10 @@ def write_to_db(cursor, time, humidity, temperature):
 def cleanup_db():
     con.close()
     cursor.close()
-    print("Database connections closed.")
+    logger.info("Database connections closed.")
 
 def main():
-    print("Reading data and writing to database every", sleep_duration, "seconds.")
+    logger.info(f'Reading data and writing to database every {sleep_duration} seconds.')
     while True:
         time, humidity, temperature = get_data()
 
@@ -51,6 +49,6 @@ if __name__=='__main__':
     except KeyboardInterrupt:
         sys.exit(0)
     finally:
-        print('\nTerminating...')
+        logger.info('Terminating...')
         cleanup_db()
 
