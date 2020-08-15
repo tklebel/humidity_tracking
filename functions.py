@@ -1,5 +1,6 @@
 import psycopg2
-import Adafruit_DHT
+import board
+import adafruit_dht
 from datetime import datetime
 from time import sleep
 
@@ -26,9 +27,29 @@ def format_result(time, humidity, temperature):
     else:
         return 'Failed to get reading.'
 
+
+def read_sensor():
+    try:
+        dhtDevice = adafruit_dht.DHT22(board.D4)
+        temperature = dhtDevice.temperature
+        humidity = dhtDevice.humidity
+        time = datetime.now()
+
+        return (time, temperature, humidity)
+    except RuntimeError:
+        logger.info('We got no reading, trying again.')
+
+        sleep(2)
+        return read_sensor()
+
+
 def get_data():
+    while True:
+        pass
     # sensor type and the pin to which the sensor is connected are hard coded since they don't change
-    humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, 4)
+    dhtDevice = adafruit_dht.DHT22(board.D4)
+    temperature = dhtDevice.temperature
+    humidity = dhtDevice.humidity
     time = datetime.now()
 
     if humidity is not None and temperature is not None:
