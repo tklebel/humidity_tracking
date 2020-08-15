@@ -2,7 +2,6 @@
 
 from telegram.ext import Updater, CommandHandler, Filters, CallbackContext
 import logging
-import Adafruit_DHT
 from datetime import datetime
 from functions import format_result, get_data, create_logger
 from bot_secrets import channels, bottoken
@@ -19,6 +18,9 @@ j = updater.job_queue
 
 # set up logging for debugging
 logger = create_logger('bot.log')
+
+# set threshold for humidty. This should ideally be changeable by sending a message to the bot
+threshold = 75
 
 
 def status(update, context):
@@ -38,7 +40,7 @@ def monitor_humidity(context: CallbackContext):
     humidity_pretty = "{0:0.1f}%".format(humidity)
 
 
-    if humidity > 75:
+    if humidity > threshold:
         job.context['alerting'] = True
 
         msg_int = job.context['message_interval']
@@ -52,7 +54,7 @@ def monitor_humidity(context: CallbackContext):
 
         job.context['message_interval'] += 1
 
-    elif humidity <= 75 and job.context['alerting']:
+    elif humidity <= threshold and job.context['alerting']:
         # this part only runs once after we have stopped alerting
 
         # reset context values
