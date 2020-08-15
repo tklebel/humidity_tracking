@@ -30,7 +30,7 @@ def format_result(time, humidity, temperature):
 
 def read_sensor():
     try:
-        dhtDevice = adafruit_dht.DHT22(board.D4)
+        dhtDevice = adafruit_dht.DHT22(board.D4, use_pulseio=False)
         temperature = dhtDevice.temperature
         humidity = dhtDevice.humidity
         time = datetime.now()
@@ -44,13 +44,7 @@ def read_sensor():
 
 
 def get_data():
-    while True:
-        pass
-    # sensor type and the pin to which the sensor is connected are hard coded since they don't change
-    dhtDevice = adafruit_dht.DHT22(board.D4)
-    temperature = dhtDevice.temperature
-    humidity = dhtDevice.humidity
-    time = datetime.now()
+    time, temperature, humidity = read_sensor()
 
     if humidity is not None and temperature is not None:
         return (time, humidity, temperature)
