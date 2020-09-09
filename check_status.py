@@ -13,6 +13,8 @@ def check_status(filename):
 
 	if res:
 		print(filename + ' is running.')
+	else: 
+		print(filename + ' is not running.')
 
 
 for file in ['read_sensor.py', 'bot.py', 'display_humidity.py']:
