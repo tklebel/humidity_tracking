@@ -37,7 +37,7 @@ def read_sensor():
         humidity = dhtDevice.humidity
         time = datetime.now()
 
-        return (time, temperature, humidity)
+        return (time, humidity, temperature)
     except RuntimeError:
         time = datetime.now()
         return (time, None, None)
@@ -55,7 +55,7 @@ def read_sensor():
 
 
 def get_data():
-    time, temperature, humidity = read_sensor()
+    time, humidity, temperature = read_sensor()
 
     if humidity is not None and temperature is not None:
         return (time, humidity, temperature)
