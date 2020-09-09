@@ -16,7 +16,6 @@ sleep_duration = 60
 logger = create_logger('read_sensor.log')
 
 
-
 # function for writing results to database
 def write_to_db(cursor, time, humidity, temperature):
     insert_sql = """INSERT INTO humidity_data
