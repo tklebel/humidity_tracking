@@ -5,6 +5,7 @@ from datetime import datetime
 from time import sleep
 
 import logging
+from systemd import journal
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
@@ -29,18 +30,28 @@ def format_result(time, humidity, temperature):
 
 
 def read_sensor():
+    dhtDevice = adafruit_dht.DHT22(board.D4, use_pulseio=False)
+
     try:
-        dhtDevice = adafruit_dht.DHT22(board.D4, use_pulseio=False)
         temperature = dhtDevice.temperature
         humidity = dhtDevice.humidity
         time = datetime.now()
 
         return (time, temperature, humidity)
     except RuntimeError:
-        logger.info('We got no reading, trying again.')
+        time = datetime.now()
+        return (time, None, None)
+        # logger.info('We got no reading, trying again.')
+        # let's not log all of those. this creates too many records
+        # for what seems to be a standard part of reading the sensor
 
-        sleep(2)
-        return read_sensor()
+        # it seems this recursion here can lead to a stack overflow
+        # maybe better to only have one service that checks the sensor
+    except Exception as error:
+        dhtDevice.exit()
+        raise error
+    finally:
+        dhtDevice.exit()
 
 
 def get_data():
@@ -68,5 +79,21 @@ def create_logger(file):
 
     # add handler
     logger.addHandler(fh)
+
+    return logger
+
+def systemd_logger():
+    # set up logging for debugging
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
+    jh = journal.JournaldLogHandler()
+
+    # create formatter and add it to the handler
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    jh.setFormatter(formatter)
+
+    # add handler
+    logger.addHandler(jh)
 
     return logger
