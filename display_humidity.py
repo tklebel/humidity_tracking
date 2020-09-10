@@ -4,14 +4,13 @@ import sys
 import Adafruit_DHT
 import logging
 from time import sleep
-from functions import get_data, create_logger
+from functions import get_data, create_logger, query_for_data
 from PCF8574 import PCF8574_GPIO
 from Adafruit_LCD1602 import Adafruit_CharLCD
 
 
-
 # set sleep duration for test purposes
-sleep_duration = 30
+sleep_duration = 10
 
 # # set up logging for debugging
 logger = create_logger('display.log')
@@ -44,7 +43,8 @@ lcd.clear()         # clear the display in case something was not removed before
 def main():
     logger.info('Displaying humidity.')
     while True:
-        time, humidity, temperature = get_data()
+        humidity = query_for_data('humidity')
+        temperature = query_for_data('temperature')
 
         # display measurements on display
         lcd.setCursor(0,0)  # set cursor position. this needs to be here, otherwise the display keeps old output

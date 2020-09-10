@@ -3,6 +3,7 @@ import board
 import adafruit_dht
 from datetime import datetime
 from time import sleep
+import requests 
 
 import logging
 from systemd import journal
@@ -63,6 +64,18 @@ def get_data():
         logger.info('We got no reading, but ``humidity = ' + str(humidity) + ' & temp = ' + str(temperature) + '`` , trying again.')
         sleep(2) # sleep for two seconds before re-trying
         return get_data()
+
+def query_for_data(type):
+    prometheus = 'http://localhost:9090/'
+
+    response = requests.get(prometheus + 'api/v1/query',
+        params={'query': f'avg_over_time({type}[20s])'}
+    )
+    result = response.json()
+
+    result = result['data']['result'][0]['value'][1]
+
+    return float(result)
 
 
 def create_logger(file):
