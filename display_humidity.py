@@ -4,7 +4,7 @@ import sys
 import Adafruit_DHT
 import logging
 from time import sleep
-from functions import get_data, create_logger, query_for_data
+from functions import get_data, systemd_logger, query_for_data
 from PCF8574 import PCF8574_GPIO
 from Adafruit_LCD1602 import Adafruit_CharLCD
 
@@ -13,7 +13,7 @@ from Adafruit_LCD1602 import Adafruit_CharLCD
 sleep_duration = 10
 
 # # set up logging for debugging
-logger = create_logger('display.log')
+logger = systemd_logger()
 
 
 def clear_display():
